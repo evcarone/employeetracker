@@ -46,6 +46,11 @@ function promptUser() {
         case "View Employees":
           viewEmployees();
           break;
+
+        case "Add Role":
+          addRole();
+          break;
+
         case "Exit":
           connection.end();
           break;
@@ -80,6 +85,48 @@ function viewEmployees() {
   })
   connection.end()
 }
+
+function addRole() {
+  inquirer
+    .prompt({
+      type: "input",
+      name: "role",
+      message: "What is the name of the new role?"
+    },
+    {
+      type: "number",
+      name: "salary",
+      message: "What is the salary for this role?"
+    },
+    {
+      type: "input",
+      name: "department",
+      message: "What is the department assignment for the new role?"
+    })
+    .then(function(answer) {
+      const newRole = answer.role
+      const newSalary = answer.newSalary
+      const roleDepartment = answer.department
+
+      const newQuery = connection.query("INSERT INTO roles SET ?",
+      [
+        {
+          title: newRole,
+          salary: newSalary,
+          dept_id: roleDepartment
+        }
+      ], 
+      function(err, res){
+        if (err) throw err
+        console.log("All the new role is", res)
+      });
+      console.log("the query is", newQuery.sql)
+    })
+  .then(function() {
+    connection.end()
+  })
+  }
+
 
 promptUser()
 
