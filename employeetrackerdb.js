@@ -19,20 +19,17 @@ var connection = mysql.createConnection({
 function promptUser() {
     return inquirer.prompt([
       {
-        type: "input",
-        name: "name",
-        message: "What is the name of your item?"
-      },
-      {
-        type: "input",
-        name: "category",
-        message: "What is the category of your item?"
-      },
-      {
-        type: "number",
-        name: "price",
-        message: "What is the price of your item?"
-      },
+        type: "list",
+        name: "action",
+        message: "What would you like to do?",
+        choices: ["View Roles", 
+                  "View Departments", 
+                  "View Employees", 
+                  "Add Roles", 
+                  "Add Departments",
+                  "Add Employees", 
+                  "Update Employee Roles"]
+      }
     ]);
   }
 
@@ -40,31 +37,26 @@ function promptUser() {
 connection.connect(function(err) {
   if (err) throw err;
   console.log("connected as id " + connection.threadId);
-  // promptUser()
-  // .then(function(answer){
-  //             const newItem = answer.name
-  //             const newItemCategory = answer.category
-  //             const newItemPrice = answer.price
+  promptUser()
+  .then(function(answer){
+              const usrAction = answer.action
               
-  //             const newQuery = connection.query("INSERT INTO items SET ?",
-  //       [
-  //       {
-  //           productName: newItem,
-  //           category: newItemCategory,
-  //           bid: newItemPrice
-  //       }
-  //       ],
-  //       function(err, res){
-  //           if (err)
-  //           throw err
-  //           console.log('oops\n', res)
-  //         });
-  //             console.log(" the user song is", newItem)
-  //             console.log("the new query is", newQuery.sql)
-  //         })
-  //         .then(function(){
-  //           connection.end();
-  //         });
+              const newQuery = connection.query("SELECT * FROM employees WHERE ?",
+        [
+        {
+            id: 1,
+        }
+        ],
+        function(err, res){
+            if (err)
+            throw err
+            console.log("oops", res)
+          });
+              console.log("the query is", newQuery.sql)
+          })
+          .then(function(){
+            connection.end();
+          });
 
 //   selectAllSongs();
 //   selectAllHoliday();
