@@ -28,35 +28,85 @@ function promptUser() {
                   "Add Roles", 
                   "Add Departments",
                   "Add Employees", 
-                  "Update Employee Roles"]
+                  "Update Employee Roles",
+                  "Exit"
+                ]
       }
-    ]);
+    ])
+    .then(function(answer){
+      switch (answer.action) {
+        case "View Roles":
+          viewRoles();
+          break;
+
+        case "View Departments":
+          viewDepartments();
+          break;
+
+        case "View Employees":
+          viewEmployees();
+          break;
+        case "Exit":
+          connection.end();
+          break;
+      }
+    })
+    ;
   }
 
+function viewRoles() {
+  var query = "SELECT * FROM roles"
+  connection.query(query, function(err, res){
+    if (err) throw err
+    console.log("the response is", res)
+  })
+  connection.end()
+}
 
-connection.connect(function(err) {
-  if (err) throw err;
-  console.log("connected as id " + connection.threadId);
-  promptUser()
-  .then(function(answer){
-              const usrAction = answer.action
+function viewDepartments() {
+  var query = "SELECT * FROM department"
+  connection.query(query, function(err, res){
+    if (err) throw err
+    console.log("the response is", res)
+  })
+  connection.end()
+}
+
+function viewEmployees() {
+  var query = "SELECT * FROM employees"
+  connection.query(query, function(err, res){
+    if (err) throw err
+    console.log("the response is", res)
+  })
+  connection.end()
+}
+
+promptUser()
+
+// EXAMPLE CODE
+// connection.connect(function(err) {
+//   if (err) throw err;
+//   console.log("connected as id " + connection.threadId);
+//   promptUser()
+//   .then(function(answer){
+//               const usrAction = answer.action
               
-              const newQuery = connection.query("SELECT * FROM employees WHERE ?",
-        [
-        {
-            id: 1,
-        }
-        ],
-        function(err, res){
-            if (err)
-            throw err
-            console.log("oops", res)
-          });
-              console.log("the query is", newQuery.sql)
-          })
-          .then(function(){
-            connection.end();
-          });
+//               const newQuery = connection.query("SELECT * FROM employees WHERE ?",
+//         [
+//         {
+//             id: 1,
+//         }
+//         ],
+//         function(err, res){
+//             if (err)
+//             throw err
+//             console.log("oops", res)
+//           });
+//               console.log("the query is", newQuery.sql)
+//           })
+//           .then(function(){
+//             connection.end();
+//           });
 
 //   selectAllSongs();
 //   selectAllHoliday();
@@ -66,23 +116,8 @@ connection.connect(function(err) {
 
   
 //   connection.end();
-});
+// });
 
-// function selectAllSongs(){
-//   connection.query("SELECT * FROM songs", function(err, res){
-//     if (err)
-//     throw err
-//     console.log(res)
-//   })
-// }
-
-// function selectAllHoliday(){
-//     connection.query("SELECT * FROM songs WHERE genre = ?",['holiday'], function(err, res){
-//       if (err)
-//       throw err
-//       console.log(res)
-//     })
-//   }
 
 //   function createSongs(){
 //     connection.query("INSERT INTO songs SET ?",
@@ -133,23 +168,3 @@ connection.connect(function(err) {
 //     });
 //     console.log(query.sql)
 //   }
-
-  
-//   promptUser()
-//       .then(function(answer){
-//           const usrSong = answer.name
-//           const newQuery = connection.query("SELECT * FROM songs WHERE ?",
-//     [
-//     {
-//         title: usrSong
-
-//     }
-//     ],
-//     function(err, res){
-//         if (err)
-//         throw err
-        // console.log('oops\n', res)
-    //   });
-    //       console.log(" the user song is", usrSong)
-    //       console.log("the new query is", newQuery.sql)
-    //   })
