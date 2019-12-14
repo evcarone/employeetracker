@@ -237,7 +237,7 @@ function updateEmployee() {
       type: "number",
       default: 0,
       name: "newDept",
-      message: "What is the ID of the department for the employee?"
+      message: "What is the new department ID for the employee?"
     }
   ])
   // use the values returned from the prompt to construct the update query
