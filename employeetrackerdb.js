@@ -59,6 +59,10 @@ function promptUser() {
           addEmployee();
           break;
 
+        case "Update Employee Roles":
+          updateEmployee();
+          break;
+
         case "Exit":
           connection.end();
           break;
@@ -219,91 +223,45 @@ function addEmployee() {
   })
   }
 
+  // need to add a new employee to the db
+// prompt the user for the required fields
+function updateEmployee() {
+  inquirer 
+    .prompt([
+    {
+      type: "input",
+      name: "lastName",
+      message: "What is the last name of the employee?"
+    },
+    {
+      type: "number",
+      default: 0,
+      name: "newDept",
+      message: "What is the ID of the department for the employee?"
+    }
+  ])
+  // use the values returned from the prompt to construct the update query
+    .then(function(answer) {
+      const getEmpLastName = answer.lastName
+      const changeEmpDeptID = answer.newDept
+      const newQuery = connection.query("UPDATE employees SET ? WHERE ?",
+      [
+        {
+          role_id: changeEmpDeptID
+        },
+        {
+          last_name: getEmpLastName,
+        }
+      ], 
+      function(err, res){
+        if (err) throw err
+        console.log("All the new dept is", res)
+      });
+      console.log("the query is", newQuery.sql)
+    })
+  .then(function() {
+    connection.end()
+  })
+  }
 
 promptUser()
-
-// EXAMPLE CODE
-// connection.connect(function(err) {
-//   if (err) throw err;
-//   console.log("connected as id " + connection.threadId);
-//   promptUser()
-//   .then(function(answer){
-//               const usrAction = answer.action
-              
-//               const newQuery = connection.query("SELECT * FROM employees WHERE ?",
-//         [
-//         {
-//             id: 1,
-//         }
-//         ],
-//         function(err, res){
-//             if (err)
-//             throw err
-//             console.log("oops", res)
-//           });
-//               console.log("the query is", newQuery.sql)
-//           })
-//           .then(function(){
-//             connection.end();
-//           });
-
-//   selectAllSongs();
-//   selectAllHoliday();
-//   createSongs();
-//   updateSongs();
-//   deleteSong();
-
-  
-//   connection.end();
-// });
-
-
-//   function createSongs(){
-//     connection.query("INSERT INTO songs SET ?",
-//     {
-//         artist: 'Elvis',
-//         title: 'jailhouse rock',
-//         genre: 'rock'
-
-//     }, function(err, res){
-//       if (err)
-//       throw err
-//       console.log('New song added\n', res)
-//     })
-//   }
-
-//   function updateSongs(){
-//     var query = connection.query("UPDATE songs SET ? WHERE ?",
-//     [
-//     {
-//         genre: 'blues'
-
-//     }, 
-//     {
-//         artist: 'Elvis'
-
-//     }
-//     ],
-//     function(err, res){
-//       if (err)
-//       throw err
-//       console.log('New song updated\n', res)
-//     });
-//     console.log(query.sql)
-//   }
-
-//   function deleteSong(){
-//     var query = connection.query("DELETE FROM songs WHERE ?",
-//     [
-//     {
-//         artist: 'Elvis'
-
-//     }
-//     ],
-//     function(err, res){
-//       if (err)
-//       throw err
-//       console.log('song deleted\n', res)
-//     });
-//     console.log(query.sql)
-//   }
