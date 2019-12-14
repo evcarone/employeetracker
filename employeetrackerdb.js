@@ -47,8 +47,16 @@ function promptUser() {
           viewEmployees();
           break;
 
-        case "Add Role":
+        case "Add Roles":
           addRole();
+          break;
+
+        case "Add Departments":
+          addDept();
+          break;
+
+        case "Add Employees":
+          addEmployee();
           break;
 
         case "Exit":
@@ -59,6 +67,7 @@ function promptUser() {
     ;
   }
 
+  // view all the roles in the database (employeetrackerDB)
 function viewRoles() {
   var query = "SELECT * FROM roles"
   connection.query(query, function(err, res){
@@ -68,6 +77,7 @@ function viewRoles() {
   connection.end()
 }
 
+// view all the departments in the database (employeetrackerDB)
 function viewDepartments() {
   var query = "SELECT * FROM department"
   connection.query(query, function(err, res){
@@ -77,6 +87,7 @@ function viewDepartments() {
   connection.end()
 }
 
+// view all the employees in the database (employeetrackerDB)
 function viewEmployees() {
   var query = "SELECT * FROM employees"
   connection.query(query, function(err, res){
@@ -86,9 +97,12 @@ function viewEmployees() {
   connection.end()
 }
 
+// need to add a new role to the db
+// prompt the user for the required fields
 function addRole() {
-  inquirer
-    .prompt({
+  inquirer 
+    .prompt([
+      {
       type: "input",
       name: "role",
       message: "What is the name of the new role?"
@@ -96,18 +110,20 @@ function addRole() {
     {
       type: "number",
       name: "salary",
+      default: 0000,
       message: "What is the salary for this role?"
     },
     {
       type: "input",
       name: "department",
       message: "What is the department assignment for the new role?"
-    })
+    }
+  ])
+  // use the values returned from the prompt to construct the insert query
     .then(function(answer) {
       const newRole = answer.role
-      const newSalary = answer.newSalary
+      const newSalary = answer.salary
       const roleDepartment = answer.department
-
       const newQuery = connection.query("INSERT INTO roles SET ?",
       [
         {
@@ -119,6 +135,82 @@ function addRole() {
       function(err, res){
         if (err) throw err
         console.log("All the new role is", res)
+      });
+      console.log("the query is", newQuery.sql)
+    })
+  .then(function() {
+    connection.end()
+  })
+  }
+
+  // need to add a new department to the db
+// prompt the user for the required fields
+function addDept() {
+  inquirer 
+    .prompt([
+      {
+      type: "input",
+      name: "department",
+      message: "What is the name of the new department?"
+    }
+  ])
+  // use the values returned from the prompt to construct the insert query
+    .then(function(answer) {
+      const newDept = answer.department
+      const newQuery = connection.query("INSERT INTO department SET ?",
+      [
+        {
+          dept_name: newDept
+        }
+      ], 
+      function(err, res){
+        if (err) throw err
+        console.log("All the new dept is", res)
+      });
+      console.log("the query is", newQuery.sql)
+    })
+  .then(function() {
+    connection.end()
+  })
+  }
+
+  // need to add a new employee to the db
+// prompt the user for the required fields
+function addEmployee() {
+  inquirer 
+    .prompt([
+      {
+      type: "input",
+      name: "firstName",
+      message: "What is the first name of the new employee?"
+    },
+    {
+      type: "input",
+      name: "lastName",
+      message: "What is the last name of the new employee?"
+    },
+    {
+      type: "input",
+      name: "newEmpDept",
+      message: "What is the ID of the department for the new employee?"
+    }
+  ])
+  // use the values returned from the prompt to construct the insert query
+    .then(function(answer) {
+      const newEmpFirstName = answer.firstName
+      const newEmpLastName = answer.lastName
+      const newEmpDeptID = answer.newEmpDept
+      const newQuery = connection.query("INSERT INTO employees SET ?",
+      [
+        {
+          first_name: newEmpFirstName,
+          last_name: newEmpLastName,
+          role_id: newEmpDeptID
+        }
+      ], 
+      function(err, res){
+        if (err) throw err
+        console.log("All the new dept is", res)
       });
       console.log("the query is", newQuery.sql)
     })
